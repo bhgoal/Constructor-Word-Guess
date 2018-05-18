@@ -1,5 +1,4 @@
 // Constructor function for creating Letter objects
-var changed;
 var Letter = function(letterActual) {
     this.letterActual = letterActual;
     this.beenGuessed = false;
@@ -15,7 +14,6 @@ var Letter = function(letterActual) {
     this.checkGuess = function(guess) {
         if (guess === this.letterActual) {
             this.beenGuessed = true;
-            changed++;
         }
     }
 };

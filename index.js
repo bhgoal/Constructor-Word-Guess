@@ -9,6 +9,8 @@ var inquirer = require("inquirer");
 var wordActual;
 var newWord;
 var lives;
+var comparator = "";
+var alreadyGuessed = [];
 beginGame();
 function beginGame() {
     wordActual = wordBank[Math.floor(Math.random() * wordBank.length)];
@@ -19,21 +21,38 @@ function beginGame() {
 }
   
 function getGuess() {
+    console.log("Lives remaining: " + lives);
     if (lives > 0) {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "userGuess",
-            message: "Enter a letter to guess:",
-        }
-
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "userGuess",
+                message: "Enter a letter to guess:",
+            }
         ]).then(function(user) {
             guess = user.userGuess;
-            newWord.runCheck(guess);
-            console.log(newWord.updateDisplay());
-            console.log(newWord.wordDisplay);
-            console.log(changed);
-            getGuess();
+            if (alreadyGuessed.indexOf(guess) === -1) {
+                newWord.runCheck(guess);
+                alreadyGuessed.push(guess);
+                if (newWord.updateDisplay() === comparator) {
+                    console.log("letter not found");
+                    console.log(comparator);
+                    lives--;
+                    getGuess();
+                } else if ((newWord.updateDisplay().indexOf("_")) === -1) {
+                    console.log("you win");
+                } else {
+                    console.log(newWord.updateDisplay());
+                    comparator = newWord.updateDisplay();
+                    getGuess();
+                }
+            } else {
+                console.log("letter already guessed");
+                console.log(comparator);
+                getGuess();
+            }
         });
+    } else {
+        console.log("you lose");
     }
 }
